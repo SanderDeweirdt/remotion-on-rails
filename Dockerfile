@@ -28,10 +28,7 @@ RUN npx remotion browser ensure
 
 RUN npm install -g tsx
 
-# Cache bust: force remotion bundle to always run fresh
-ARG CACHEBUST=1
-RUN echo "Building bundle with compositions: $(date)" && npx remotion bundle
-
 RUN npx prisma generate
 
-CMD ["sh", "-c", "npx prisma migrate deploy && tsx src/render-server.ts"]
+# Bundle runs at container start so it always picks up latest src/
+CMD ["sh", "-c", "npx prisma migrate deploy && npx remotion bundle && tsx src/render-server.ts"]
