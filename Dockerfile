@@ -30,5 +30,5 @@ RUN npm install -g tsx
 
 RUN npx prisma generate
 
-# Bundle runs at container start so it always picks up latest src/
-CMD ["sh", "-c", "npx prisma migrate deploy && npx remotion bundle && tsx src/render-server.ts"]
+# Remove any stale build, then re-bundle fresh from src/ at startup
+CMD ["sh", "-c", "rm -rf build && npx remotion bundle && npx prisma migrate deploy && tsx src/render-server.ts"]
