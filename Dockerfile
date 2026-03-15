@@ -20,7 +20,6 @@ RUN apt install -y \
 COPY package.json package*.json yarn.lock* pnpm-lock.yaml* bun.lockb* bun.lock* tsconfig.json* remotion.config.* ./
 COPY src ./src
 COPY prisma ./prisma
-
 COPY public ./public
 
 RUN npm i
@@ -29,7 +28,9 @@ RUN npx remotion browser ensure
 
 RUN npm install -g tsx
 
-RUN npx remotion bundle
+# Cache bust: force remotion bundle to always run fresh
+ARG CACHEBUST=1
+RUN echo "Building bundle with compositions: $(date)" && npx remotion bundle
 
 RUN npx prisma generate
 
